@@ -2,7 +2,7 @@
   "name": "js-state-handler",
   "version": "0.1.0",
   "description": "A renderable state handler for states outside of frameworks",
-  "main": "./index.js",
+  "main": "./src/StateHandler.js",
   "scripts": {
     "compile": "npm run transpile-default && npm run transpile-min",
     "transpile-default": "babel src/StateHandler.js --plugins transform-es2015-modules-umd --presets es2015,stage-0 --out-file dist/StateHandler.js && babel src/StateHandler.js --plugins transform-es2015-modules-umd --presets es2015,stage-0 --out-file docs/StateHandler.js",
