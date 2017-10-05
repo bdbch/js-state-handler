@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
 </head>
+
 <body>
   <h1>Counter Demo</h1>
   <hr />
@@ -42,11 +44,23 @@
         name: "Anna"
       }]
     }, [
-      renderCounter,
-      renderLoadingText,
-      renderCurrentState,
-      renderPersons
-    ])
+        {
+          keys: ['count'],
+          method: renderCounter
+        },
+        {
+          keys: ['loading'],
+          method: renderLoadingText
+        },
+        {
+          keys: ['currentPersonInput'],
+          method: renderCurrentState
+        },
+        {
+          keys: ['persons'],
+          method: renderPersons
+        }
+      ])
     GlobalState.render()
 
     var decreaseCounter = function () {
@@ -82,11 +96,13 @@
       }
     }
 
-    function renderCounter () {
+    function renderCounter() {
+      console.log(`running renderCounter`)
       counterTarget.innerHTML = GlobalState.data.count
     }
 
-    function renderLoadingText () {
+    function renderLoadingText() {
+      console.log(`running renderLoadingText`)
       if (GlobalState.data.loading) {
         loaderText.innerHTML = 'Loading ...'
       } else {
@@ -94,11 +110,13 @@
       }
     }
 
-    function renderCurrentState () {
+    function renderCurrentState() {
+      console.log(`running renderCurrentState`)
       currentState.innerHTML = JSON.stringify(GlobalState.data)
     }
 
-    function renderPersons () {
+    function renderPersons() {
+      console.log(`running renderPersons`)
       var list = ''
       for (person of GlobalState.data.persons) {
         list += '<li>' + person.name + '</li>'
@@ -109,4 +127,5 @@
     }
   </script>
 </body>
+
 </html>
