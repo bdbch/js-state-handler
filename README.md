@@ -39,6 +39,10 @@ TodoState.set({
 
 For more informations, [check the documentation](https://github.com/bdbch/js-state-handler/wiki/creating-a-simple-state).
 
+## Maintainers
+
+* [bdbch](https://github.com/bdbch)
+
 ## Why?
 
 I used a state-like approach in a project which is based on PHP and CustomElements. Instead of changing styles directly I liked a more readable approach to change states.
