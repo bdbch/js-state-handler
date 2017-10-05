@@ -1,6 +1,6 @@
 class StateHandler {
   constructor (initialState = false, initialFn = false) {
-    this._state = initialState || {}
+    this.data = initialState || {}
     this.functions = []
 
     if (initialFn) {
@@ -9,17 +9,8 @@ class StateHandler {
   }
 
   set (newState) {
-    Object.assign(this._state, newState)
+    Object.assign(this.data, newState)
     this.render()
-  }
-
-  get (key = false) {
-    if (!key) {
-      return this._state
-    }
-
-    const value = (this._state[key] !== undefined) ? this._state[key] : false
-    return value
   }
 
   render () {

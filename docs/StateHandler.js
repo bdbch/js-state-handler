@@ -50,7 +50,7 @@
 
       _classCallCheck(this, StateHandler);
 
-      this._state = initialState || {};
+      this.data = initialState || {};
       this.functions = [];
 
       if (initialFn) {
@@ -61,20 +61,8 @@
     _createClass(StateHandler, [{
       key: 'set',
       value: function set(newState) {
-        Object.assign(this._state, newState);
+        Object.assign(this.data, newState);
         this.render();
-      }
-    }, {
-      key: 'get',
-      value: function get() {
-        var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-        if (!key) {
-          return this._state;
-        }
-
-        var value = this._state[key] !== undefined ? this._state[key] : false;
-        return value;
       }
     }, {
       key: 'render',
