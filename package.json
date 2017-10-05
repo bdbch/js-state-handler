@@ -1,6 +1,6 @@
 {
   "name": "js-state-handler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A renderable state handler for states outside of frameworks",
   "main": "./src/StateHandler.js",
   "scripts": {
