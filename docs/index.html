@@ -18,7 +18,7 @@
     <button onclick="increaseCounter()">+</button>
     <button onclick="toggleLoading()">Load</button>
     <br />
-    <input type="text" id="newName" />
+    <input type="text" id="newName" onkeyup="changeCurrentInput()" />
     <button onclick="addPerson()">Add Person</button>
   </div>
 
@@ -33,6 +33,7 @@
     var GlobalState = new StateHandler({
       count: 0,
       loading: false,
+      currentPersonInput: '',
       persons: [{
         name: "Markus"
       }, {
@@ -49,47 +50,44 @@
     GlobalState.render()
 
     var decreaseCounter = function () {
-      var count = GlobalState.get('count')
       GlobalState.set({
-        count: count - 1
+        count: GlobalState.data.count - 1
       })
     }
 
     var increaseCounter = function () {
-      var count = GlobalState.get('count')
       GlobalState.set({
-        count: count + 1
+        count: GlobalState.data.count + 1
       })
     }
 
     var toggleLoading = function () {
-      var loading = GlobalState.get('loading')
       GlobalState.set({
-        loading: (loading) ? false : true
+        loading: (GlobalState.data.loading) ? false : true
+      })
+    }
+
+    var changeCurrentInput = function () {
+      GlobalState.set({
+        currentPersonInput: newName.value
       })
     }
 
     var addPerson = function () {
-      var name = newName.value
+      var name = GlobalState.data.currentPersonInput
       if (name.length > 0) {
-        var personArray = GlobalState._state.persons
-        personArray.push({
-          name: name
-        })
-        GlobalState.set({
-          persons: personArray
-        })
+        var personArray = GlobalState.data.persons
+        personArray.push({ name: name })
+        GlobalState.set({ persons: personArray, currentPersonInput: '' })
       }
     }
 
     function renderCounter () {
-      var count = GlobalState.get('count')
-      counterTarget.innerHTML = count
+      counterTarget.innerHTML = GlobalState.data.count
     }
 
     function renderLoadingText () {
-      var isLoading = GlobalState.get('loading')
-      if (isLoading) {
+      if (GlobalState.data.loading) {
         loaderText.innerHTML = 'Loading ...'
       } else {
         loaderText.innerHTML = ''
@@ -97,18 +95,17 @@
     }
 
     function renderCurrentState () {
-      var state = GlobalState.get()
-      currentState.innerHTML = JSON.stringify(state)
+      currentState.innerHTML = JSON.stringify(GlobalState.data)
     }
 
     function renderPersons () {
-      var persons = GlobalState.get('persons')
       var list = ''
-      for (person of persons) {
+      for (person of GlobalState.data.persons) {
         list += '<li>' + person.name + '</li>'
       }
 
       personList.innerHTML = list
+      newName.value = GlobalState.data.currentPersonInput
     }
   </script>
 </body>
