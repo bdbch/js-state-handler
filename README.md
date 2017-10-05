@@ -12,7 +12,7 @@ JS State Handler can be installed via NPM.
 npm install js-state-handler --save
 ```
 
-You can also install JS State Handler manually. [Learn more here](wiki/Installation).
+You can also install JS State Handler manually. [Learn more here](https://github.com/bdbch/js-state-handler/wiki/Installation).
 
 # Usage
 
@@ -37,7 +37,7 @@ TodoState.set({
 })
 ```
 
-For more informations, [check the documentation](wiki/creating-a-simple-state).
+For more informations, [check the documentation](https://github.com/bdbch/js-state-handler/wiki/creating-a-simple-state).
 
 ## Why?
 
