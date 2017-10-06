@@ -5,126 +5,104 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>JS State Handler Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.3/css/bulma.min.css" />
 </head>
 
 <body>
-  <h1>Counter Demo</h1>
-  <hr />
-  <pre id="current-state" style="padding: 8px; min-height: 150px; font-family: monospace; background: #f3f3f3; border: 1px solid #eee; margin-bottom: 3em; display: block; max-width: 650px; width: 100%; white-space: normal; line-height: 2;"></pre>
-  <ul id="persons"></ul>
-  <div id="loader-text"></div>
-  <div id="counter-target"></div>
-  <div>
-    <button onclick="decreaseCounter()">-</button>
-    <button onclick="increaseCounter()">+</button>
-    <button onclick="toggleLoading()">Load</button>
-    <br />
-    <input type="text" id="newName" onkeyup="changeCurrentInput()" />
-    <button onclick="addPerson()">Add Person</button>
-  </div>
+  <section class="hero is-dark">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">JS State Handler Demo</h1>
+        <p class="subtitle">Random Dog Breed</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container">
+        <div id="dog-container"></div>
+        <div id="loader-container"></div>
+        <button class="button is-primary" id="dog-button">Load new dog</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero is-danger">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Current State</h1>
+          <p class="subtitle">The current state data in a live preview</p>
+          <pre id="state-demo"></pre>
+        </div>
+      </div>
+    </section>
 
   <script src="./StateHandler.js"></script>
   <script>
-    var currentState = document.getElementById('current-state')
-    var counterTarget = document.getElementById('counter-target')
-    var loaderText = document.getElementById('loader-text')
-    var personList = document.getElementById('persons')
-    var newName = document.getElementById('newName')
+    var dogContainer = document.getElementById('dog-container')
+    var dogButton = document.getElementById('dog-button')
+    var stateDemo = document.getElementById('state-demo')
+    var loaderContainer = document.getElementById('loader-container')
 
-    var GlobalState = new StateHandler({
-      count: 0,
-      loading: false,
-      currentPersonInput: '',
-      persons: [{
-        name: "Markus"
-      }, {
-        name: "Peter"
-      }, {
-        name: "Anna"
-      }]
+    var DogState = new StateHandler({
+      dog: false,
+      loading: false
     }, [
-        {
-          keys: ['count'],
-          method: renderCounter
-        },
-        {
-          keys: ['loading'],
-          method: renderLoadingText
-        },
-        {
-          keys: ['currentPersonInput'],
-          method: renderCurrentState
-        },
-        {
-          keys: ['persons'],
-          method: renderPersons
-        }
-      ])
-    GlobalState.render()
-
-    var decreaseCounter = function () {
-      GlobalState.set({
-        count: GlobalState.data.count - 1
-      })
-    }
-
-    var increaseCounter = function () {
-      GlobalState.set({
-        count: GlobalState.data.count + 1
-      })
-    }
-
-    var toggleLoading = function () {
-      GlobalState.set({
-        loading: (GlobalState.data.loading) ? false : true
-      })
-    }
-
-    var changeCurrentInput = function () {
-      GlobalState.set({
-        currentPersonInput: newName.value
-      })
-    }
-
-    var addPerson = function () {
-      var name = GlobalState.data.currentPersonInput
-      if (name.length > 0) {
-        var personArray = GlobalState.data.persons
-        personArray.push({ name: name })
-        GlobalState.set({ persons: personArray, currentPersonInput: '' })
+      {
+        keys: ['dog'],
+        method: renderDog
+      },
+      {
+        keys: ['loading'],
+        method: renderLoader
+      },
+      {
+        keys: ['dog', 'loading'],
+        method: renderStateDemo
       }
-    }
+    ])
 
-    function renderCounter() {
-      console.log(`running renderCounter`)
-      counterTarget.innerHTML = GlobalState.data.count
-    }
-
-    function renderLoadingText() {
-      console.log(`running renderLoadingText`)
-      if (GlobalState.data.loading) {
-        loaderText.innerHTML = 'Loading ...'
+    function renderDog () {
+      if (DogState.data.dog && !DogState.data.loading) {
+        dogContainer.innerHTML = `<img class="dog-image" src="${DogState.data.dog}" />`
       } else {
-        loaderText.innerHTML = ''
+        dogContainer.innerHTML = ``
       }
     }
 
-    function renderCurrentState() {
-      console.log(`running renderCurrentState`)
-      currentState.innerHTML = JSON.stringify(GlobalState.data)
-    }
-
-    function renderPersons() {
-      console.log(`running renderPersons`)
-      var list = ''
-      for (person of GlobalState.data.persons) {
-        list += '<li>' + person.name + '</li>'
+    function renderLoader () {
+      if (DogState.data.loading) {
+        loaderContainer.innerHTML = `<div class="loading-text">New dog will be loaded soon...</div>`
+      } else {
+        loaderContainer.innerHTML = ``
       }
-
-      personList.innerHTML = list
-      newName.value = GlobalState.data.currentPersonInput
     }
+
+    function renderStateDemo () {
+      stateDemo.innerHTML = JSON.stringify(DogState.data)
+    }
+
+    dogButton.addEventListener('click', fetchRandomDog)
+
+    function fetchRandomDog () {
+      DogState.set({
+        loading: true
+      })
+      fetch('https://dog.ceo/api/breeds/image/random')
+        .then(function(response) {
+          return response.json()
+        })
+        .then(function(data) {
+          DogState.set({
+            dog: data.message,
+            loading: false
+          })
+        })
+    }
+
+    fetchRandomDog()
   </script>
 </body>
 
