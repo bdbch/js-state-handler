@@ -28,7 +28,10 @@ var renderItems = function () {
   // handle todo item rendering
 }
 
-TodoState.addToRenderer(renderItems)
+TodoState.addToRenderer({
+  keys: ['items'],
+  method: renderItems
+})
 TodoState.render()
 
 // Now change the state
