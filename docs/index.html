@@ -74,7 +74,7 @@
 
     function renderLoader () {
       if (DogState.data.loading) {
-        loaderContainer.innerHTML = `<div class="loading-text">New dog will be loaded soon...</div>`
+        loaderContainer.innerHTML = `<div class="loading-text" style="padding: 4px; border: 1px solid #aaa; margin: 15px 0;">New dog will be loaded soon...</div>`
       } else {
         loaderContainer.innerHTML = ``
       }
@@ -88,7 +88,8 @@
 
     function fetchRandomDog () {
       DogState.set({
-        loading: true
+        loading: true,
+        dog: false
       })
       fetch('https://dog.ceo/api/breeds/image/random')
         .then(function(response) {
