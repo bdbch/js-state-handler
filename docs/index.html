@@ -7,6 +7,29 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>JS State Handler Demo</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.3/css/bulma.min.css" />
+  <style>
+    .history-items:after {
+      clear: both;
+    }
+    
+    .history-item {
+      display: block;
+      width: 25%;
+      height: 0;
+      padding-bottom: 25%;
+      position: relative;
+      float: left;
+    }
+
+    .history-item img {
+      height: 100%;
+      left: 0;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
@@ -22,9 +45,17 @@
   <section class="hero">
     <div class="hero-body">
       <div class="container">
-        <div id="dog-container"></div>
-        <div id="loader-container"></div>
-        <button class="button is-primary" id="dog-button">Load new dog</button>
+        <div class="columns">
+          <div class="column">
+            <div id="dog-container"></div>
+            <div id="loader-container"></div>
+            <button class="button is-primary" id="dog-button">Load new dog</button>
+          </div>
+          <div class="column is-one-third">
+            <h3 class="title">Dog History</h3>
+            <div id="dog-history"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -34,21 +65,36 @@
         <div class="container">
           <h1 class="title">Current State</h1>
           <p class="subtitle">The current state data in a live preview</p>
-          <pre id="state-demo"></pre>
+          <pre id="state-demo" style="white-space: normal;"></pre>
         </div>
       </div>
     </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          Made with 🔥, 🕶 and ️❤️ by <a href="https://github.com/bdbch" target="_blank">@bdbch</a>
+        </p>
+        <p>
+          <a href="https://github.com/bdbch/js-state-handler" target="_blank">Check out on Github</a>
+        </p>
+      </div>
+    </div>
+  </footer>
 
   <script src="./StateHandler.js"></script>
   <script>
     var dogContainer = document.getElementById('dog-container')
     var dogButton = document.getElementById('dog-button')
+    var dogHistory = document.getElementById('dog-history')
     var stateDemo = document.getElementById('state-demo')
     var loaderContainer = document.getElementById('loader-container')
 
     var DogState = new StateHandler({
       dog: false,
-      loading: false
+      loading: false,
+      history: []
     }, [
       {
         keys: ['dog'],
@@ -61,6 +107,10 @@
       {
         keys: ['dog', 'loading'],
         method: renderStateDemo
+      },
+      {
+        keys: ['history'],
+        method: renderHistory
       }
     ])
 
@@ -96,11 +146,30 @@
           return response.json()
         })
         .then(function(data) {
+          var currentHistory = DogState.data.history
+          currentHistory.push(data.message)
           DogState.set({
             dog: data.message,
-            loading: false
+            loading: false,
+            history: currentHistory
           })
         })
+    }
+
+    function renderHistory () {
+      var historyHTML = `<ul class="history-items">`
+      for (dog of DogState.data.history) {
+        historyHTML += `
+          <li>
+            <a href="#" class="history-item">
+              <img src="${dog}" />
+            </a>
+          </li>
+        `
+      }
+      historyHTML += `</ul>`
+
+      dogHistory.innerHTML = historyHTML
     }
 
     fetchRandomDog()
