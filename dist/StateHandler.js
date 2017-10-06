@@ -1,6 +1,6 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['module'], factory);
+    define(["module"], factory);
   } else if (typeof exports !== "undefined") {
     factory(module);
   } else {
@@ -11,7 +11,7 @@
     global.StateHandler = mod.exports;
   }
 })(this, function (module) {
-  'use strict';
+  "use strict";
 
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
@@ -59,20 +59,34 @@
     }
 
     _createClass(StateHandler, [{
-      key: 'set',
+      key: "set",
       value: function set(newState) {
+        var changedKeys = Object.keys(newState);
+        var fnsToRun = this.functions.filter(function (fnObj) {
+          return fnObj.keys.filter(function (key) {
+            return changedKeys.indexOf(key) > -1;
+          }).length !== 0;
+        }).map(function (fnObj) {
+          return fnObj.method;
+        });
+
         Object.assign(this.data, newState);
-        this.render();
+        this.render(fnsToRun);
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
+        var fns = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+        var fnsToRun = fns || this.functions.map(function (fnObj) {
+          return fnObj.method;
+        });
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = this.functions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = fnsToRun[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var fn = _step.value;
 
             fn();
@@ -93,16 +107,16 @@
         }
       }
     }, {
-      key: 'addToRenderer',
+      key: "addToRenderer",
       value: function addToRenderer() {
         var fn = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-        if (!fn && typeof fn !== 'function' && (typeof fn === 'undefined' ? 'undefined' : _typeof(fn)) !== 'object') {
-          console.error('Please provide a function or an array of functions to add them to the renderer');
+        if (!fn && typeof fn !== "function" && (typeof fn === "undefined" ? "undefined" : _typeof(fn)) !== "object") {
+          console.error("Please provide a function or an array of functions to add them to the renderer");
           return false;
         }
 
-        if ((typeof fn === 'undefined' ? 'undefined' : _typeof(fn)) === 'object') {
+        if ((typeof fn === "undefined" ? "undefined" : _typeof(fn)) === "object") {
           var _iteratorNormalCompletion2 = true;
           var _didIteratorError2 = false;
           var _iteratorError2 = undefined;
@@ -111,8 +125,8 @@
             for (var _iterator2 = fn[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
               var renderFunction = _step2.value;
 
-              if (typeof renderFunction !== 'function') {
-                console.error('The provided data is not a function.');
+              if (typeof renderFunction.method !== "function") {
+                console.error("The provided data is not a function.");
                 return false;
               }
 
