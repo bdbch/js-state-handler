@@ -1,6 +1,7 @@
 class StateHandler {
   constructor (initialState = false, initialFn = false) {
-    this.data = initialState || {}
+    this.data = Object.assign({}, initialState)
+    this.initialState = initialState
     this.functions = []
 
     if (initialFn) {
@@ -19,6 +20,11 @@ class StateHandler {
 
     Object.assign(this.data, newState)
     this.render(fnsToRun)
+  }
+
+  reset () {
+    Object.assign(this.data, this.initialState)
+    this.render(this.functions)
   }
 
   render (fns = false) {
