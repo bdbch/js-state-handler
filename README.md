@@ -1,5 +1,7 @@
 # JS State Handler
 
+[![Travis](https://img.shields.io/travis/bdbch/js-state-handler.svg)](https://travis-ci.org/bdbch/js-state-handler/builds)
+
 > A simple state handler with rendering functionality
 
 ### [Demo](https://bdbch.github.io/js-state-handler/)
