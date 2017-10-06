@@ -43,9 +43,16 @@ class StateHandler {
           return false;
         }
 
+        if (renderFunction.keys === '*') {
+          renderFunction.keys = Object.keys(this.data);
+        }
+
         this.functions.push(renderFunction);
       }
     } else {
+      if (fn.keys === '*') {
+        fn.keys = Object.keys(this.data);
+      }
       this.functions.push(fn);
     }
   }
