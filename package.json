@@ -5,10 +5,10 @@
   "main": "./src/StateHandler.js",
   "scripts": {
     "compile": "npm run transpile-default && npm run transpile-min",
-    "transpile-default": "babel src/StateHandler.js --plugins transform-es2015-modules-umd --presets es2015,stage-0 --out-file dist/StateHandler.js && babel src/StateHandler.js --plugins transform-es2015-modules-umd --presets es2015,stage-0 --out-file docs/StateHandler.js",
-    "transpile-min": "babel src/StateHandler.js --plugins transform-es2015-modules-umd --presets es2015,stage-0,minify --out-file dist/StateHandler.min.js",
+    "transpile-default": "babel src/StateHandler.js --out-file dist/StateHandler.js && babel src/StateHandler.js --out-file docs/StateHandler.js",
+    "transpile-min": "babel src/StateHandler.js --presets minify --out-file dist/StateHandler.min.js",
     "prepublish": "npm run compile",
-    "test": "standard src/**/*.js && echo TODO: Add tests"
+    "test": "standard src/**/*.js && jest"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-minify": "^0.2.0",
     "babel-preset-stage-0": "^6.24.1",
+    "jest": "^21.2.1",
     "standard": "^10.0.3"
   }
 }
