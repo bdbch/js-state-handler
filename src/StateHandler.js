@@ -62,6 +62,11 @@ class StateHandler {
       this.functions.push(fn)
     }
   }
+  
+  pushNewState (currentState, object) {
+    currentState = [...currentState, object]
+  }
+
 }
 
 module.exports = StateHandler
