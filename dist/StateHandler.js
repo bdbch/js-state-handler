@@ -1,17 +1,29 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['module'], factory);
+    define(['module', 'dompurify'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(module);
+    factory(module, require('dompurify'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod);
+    factory(mod, global.dompurify);
     global.StateHandler = mod.exports;
   }
-})(this, function (module) {
+})(this, function (module, DOMPurify) {
   'use strict';
+
+  function _toConsumableArray(arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+        arr2[i] = arr[i];
+      }
+
+      return arr2;
+    } else {
+      return Array.from(arr);
+    }
+  }
 
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
@@ -50,7 +62,8 @@
 
       _classCallCheck(this, StateHandler);
 
-      this.data = initialState || {};
+      this.data = Object.assign({}, this.sanitize(initialState));
+      this.initialState = initialState;
       this.functions = [];
 
       if (initialFn) {
@@ -70,8 +83,14 @@
           return fnObj.method;
         });
 
-        Object.assign(this.data, newState);
+        Object.assign(this.data, this.sanitize(newState));
         this.render(fnsToRun);
+      }
+    }, {
+      key: 'reset',
+      value: function reset() {
+        Object.assign(this.data, this.initialState);
+        this.render(this.functions);
       }
     }, {
       key: 'render',
@@ -157,10 +176,45 @@
           this.functions.push(fn);
         }
       }
+    }, {
+      key: 'pushNewState',
+      value: function pushNewState(currentState, object) {
+        currentState = [].concat(_toConsumableArray(currentState), [object]);
+      }
+    }, {
+      key: 'sanitize',
+      value: function sanitize(dirty) {
+        var clean = Object.assign({}, dirty);
+
+        for (var key in clean) {
+          /** Checks for the 'sanitize' key on the "second level of the object": */
+          if (clean[key]['sanitize']) {
+            /** I noticed the set() value takes an Array, so I made a seperate if blok for that to iterate through the Array */
+            if (clean[key]['value'] instanceof Array) {
+              clean[key]['value'].forEach(function (element, index, array) {
+                array[index] = DOMPurify.sanitize(element);
+              });
+              /** This is in the case of an object */
+            } else {
+              clean[key]['value'] = DOMPurify.sanitize(clean[key]['value']);
+            }
+          }
+        }
+
+        return clean;
+      }
     }]);
 
     return StateHandler;
   }();
 
+  /**
+  * {
+  *   notMalicious: {
+  *     value: 'Friendly',
+  *     sanitize: true
+  *   }
+  * }
+  */
   module.exports = StateHandler;
 });
